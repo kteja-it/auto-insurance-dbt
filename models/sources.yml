@@ -1,0 +1,10 @@
+version: 2
+sources:
+  - name: raw
+    database: INSURANCE_ANALYTICS
+    schema: RAW
+    tables:
+      - name: POLICIES
+      - name: CUSTOMERS
+      - name: VEHICLES
+      - name: CLAIMS

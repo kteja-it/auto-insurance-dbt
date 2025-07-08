@@ -1,0 +1,13 @@
+default:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: hrabrrz-tjc36429.us-east-1
+      user: Teja
+      password: Tejabhavani597  # Or use key pair authentication
+      role: ACCOUNTADMIN
+      database: INSURANCE_ANALYTICS
+      warehouse: AUTO_M
+      schema: STAGING
+      threads: 4
