@@ -1,4 +1,10 @@
 {{ config(materialized='table', schema='ANALYTICS') }}
+{{ config(
+    materialized = 'incremental',
+    schema='ANALYTICS',
+    unique_key = 'claim_id'
+) }}
+
 
 SELECT
   c.claim_id,
@@ -23,3 +29,6 @@ INNER JOIN {{ ref('dim_policies') }} p ON c.policy_number = p.policy_number
 INNER JOIN {{ ref('dim_customers') }} cu ON c.customer_id = cu.customer_id
 INNER JOIN {{ ref('dim_vehicles') }} v ON c.policy_number = v.policy_number
 INNER JOIN {{ ref('dim_dates') }} d ON c.incident_date = d.date_id
+{% if is_incremental() %}
+    where c.incident_date >= (select max(date_id) from {{this}} )
+{% endif %}

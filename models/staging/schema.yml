@@ -105,6 +105,10 @@ models:
         tests:
           - dbt_utils.expression_is_true:
               expression: " >= 0"
+
+      - name: claim_amount
+        tests:
+          - claim_amount_consistency
   
   - name: dim_dates
     description: Dimension table for dates
