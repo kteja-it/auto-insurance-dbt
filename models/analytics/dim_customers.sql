@@ -1,13 +1,14 @@
-{{ config(materialized='table') }}
+{{ config(materialized='table', schema='ANALYTICS') }}
 
 SELECT
   customer_id,
   age,
+  age_group,
   insured_sex,
-  insured_education_level,
+  education_level,
   insured_occupation,
   insured_hobbies,
   insured_relationship,
   capital_gains,
   capital_loss
-From {{ ref('stg_customers') }}
+FROM {{ ref('stg_customers') }}
