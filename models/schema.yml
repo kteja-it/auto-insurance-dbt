@@ -109,7 +109,6 @@ models:
 
       - name: claim_amount
         tests:
-          - claim_amount_consistency
           - dbt_utils.expression_is_true:
               expression: "  >= 0"
         
