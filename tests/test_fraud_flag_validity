@@ -1,0 +1,5 @@
+{% test test_fraud_flag_validity(model, column_name) %}
+  SELECT *
+  FROM {{ model }}
+  WHERE {{ column_name }} NOT IN (0, 1)
+{% endtest %}
