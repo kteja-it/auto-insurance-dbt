@@ -16,6 +16,9 @@ models:
           - accepted_values:
               values: ['OH', 'IN', 'IL', 'PA', 'NY', 'SC', 'VA', null]
   - name: stg_customers
+    tests:
+        - dbt_utils.expression_is_true:
+            expression: " age BETWEEN 18 AND 100"
     description: Cleaned customer data for insurance analytics
     columns:
       - name: customer_id
@@ -26,10 +29,7 @@ models:
         tests:
           - accepted_values:
               values: ['MALE', 'FEMALE']
-      - name: age
-        tests:
-          - dbt_utils.expression_is_true:
-              expression: " BETWEEN 18 AND 100"
+      
   - name: stg_vehicles
     description: Cleaned vehicle data for insurance analytics
     columns:
@@ -81,6 +81,7 @@ models:
 
   - name: fact_claims
     description: Fact table for claims analytics
+
     columns:
       - name: claim_id
         tests:
@@ -94,12 +95,12 @@ models:
       - name: customer_id
         tests:
           - relationships:
-              to: ref('stg_customers')
+              to: ref('dim_customers')
               field: customer_id
       - name: vehicle_id
         tests:
           - relationships:
-              to: ref('stg_vehicles')
+              to: ref('dim_vehicles')
               field: vehicle_id
       - name: claim_amount
         tests:
@@ -109,6 +110,9 @@ models:
       - name: claim_amount
         tests:
           - claim_amount_consistency
+          - dbt_utils.expression_is_true:
+              expression: "  >= 0"
+        
   
   - name: dim_dates
     description: Dimension table for dates
