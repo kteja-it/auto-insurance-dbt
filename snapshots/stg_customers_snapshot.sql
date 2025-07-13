@@ -4,7 +4,8 @@
   config(
     target_schema='ANALYTICS',
     strategy='check',
-    check_cols=['age_group', 'insured_sex']
+    unique_key='customer_id',
+    check_cols=['age_group', 'insured_sex', 'age', 'insured_education_level']  -- Updated to include new columns
   ) 
 }}
 
