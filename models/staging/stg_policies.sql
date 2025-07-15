@@ -4,10 +4,11 @@ WITH cleaned_policies AS (
   SELECT
     policy_number,
     policy_bind_date,
-    CASE 
+    {{ coalesce_null('policy_state',"'unknown'")}},
+    /*CASE 
       WHEN policy_state IN ('OH', 'IN', 'IL', 'PA', 'NY', 'SC', 'VA') THEN policy_state
       ELSE NULL
-    END AS policy_state,
+    END AS policy_state,*/
     policy_csl,
     policy_deductable,
     CASE 

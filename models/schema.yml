@@ -1,0 +1,144 @@
+version: 2
+
+models:
+  - name: stg_policies
+    description: Cleaned policy data for insurance analytics
+    columns:
+      - name: policy_number
+        tests:
+          - unique
+          - not_null
+      - name: policy_bind_date
+        tests:
+          - not_null
+      - name: policy_state
+        tests:
+          - accepted_values:
+              values: ['OH', 'IN', 'IL', 'PA', 'NY', 'SC', 'VA', null]
+  - name: stg_customers
+    tests:
+        - dbt_utils.expression_is_true:
+            expression: " age BETWEEN 18 AND 100"
+    description: Cleaned customer data for insurance analytics
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: insured_sex
+        tests:
+          - accepted_values:
+              values: ['MALE', 'FEMALE']
+      
+  - name: stg_vehicles
+    description: Cleaned vehicle data for insurance analytics
+    columns:
+      - name: vehicle_id
+        tests:
+          - unique
+          - not_null
+      - name: policy_number
+        tests:
+          - not_null
+      - name: auto_make
+        tests:
+          - accepted_values:
+              values: ['Toyota','Chevrolet','Saab','Volkswagen','Nissan','Accura','Jeep','Dodge','Honda','Ford','Audi','Suburu','Mercedes','Bmw']
+
+  - name: stg_claims
+    columns:
+      - name: claim_id
+        tests:
+          - not_null
+          - unique
+      
+      - name: policy_number
+        tests:
+          - relationships:
+              to: ref('stg_policies')
+              field: policy_number
+
+      - name: incident_type
+        tests:
+          - accepted_values:
+              values: ['Single Vehicle Collision','Multi-vehicle Collision','Vehicle Theft','Parked Car']
+
+      - name: validated_total_claim_amount
+        tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.95
+  - name: dim_policies
+    description: Dimension table for policy details
+    columns:
+      - name: policy_number
+        tests:
+          - unique
+          - not_null
+      - name: policy_duration_years
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: " >= 0"
+
+  - name: fact_claims
+    description: Fact table for claims analytics
+
+    columns:
+      - name: claim_id
+        tests:
+          - unique
+          - not_null
+      - name: policy_number
+        tests:
+          - relationships:
+              to: ref('dim_policies')
+              field: policy_number
+      - name: customer_id
+        tests:
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: vehicle_id
+        tests:
+          - relationships:
+              to: ref('dim_vehicles')
+              field: vehicle_id
+      - name: claim_amount
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: " >= 0"
+
+      - name: claim_amount
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "  >= 0"
+        
+  
+  - name: dim_dates
+    description: Dimension table for dates
+    columns:
+      - name: date_id
+        tests:
+          - unique
+          - not_null
+      - name: year
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: " BETWEEN 2014 AND 2025"
+
+  - name: dim_vehicles
+    description: Dimension table for vehicle details
+    columns:
+      - name: vehicle_id
+        tests:
+          - unique
+          - not_null
+      - name: policy_number
+        tests:
+          - relationships:
+              to: ref('stg_policies')
+              field: policy_number
+      - name: auto_year
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: " BETWEEN 1990 AND 2025"
+          

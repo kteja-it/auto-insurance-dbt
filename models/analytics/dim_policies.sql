@@ -1,12 +1,13 @@
-{{ config(materialized='table') }}
+{{ config(materialized='table', schema='ANALYTICS') }}
 
-select 
-POLICY_NUMBER,
-POLICY_BIND_DATE,
-POLICY_STATE,
-POLICY_CSL,
-POLICY_DEDUCTABLE,
-POLICY_ANNUAL_PREMIUM,
-UMBRELLA_LIMIT,
-INSURED_ZIP
-from {{ ref('stg_policies') }}
+SELECT
+  policy_number,
+  policy_bind_date,
+  DATEDIFF(YEAR, policy_bind_date, '2025-07-09') AS policy_duration_years,
+  COALESCE(policy_state, 'Unknown') AS policy_state,
+  insured_zip,
+  policy_csl,
+  policy_deductable,
+  policy_annual_premium,
+  umbrella_limit
+FROM {{ ref('stg_policies') }}
