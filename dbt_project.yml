@@ -24,6 +24,7 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "dbt_packages"
 
 
+
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
@@ -44,10 +45,4 @@ models:
       +materialized: table
       +schema: ANALYTICS
 
-# Exclude specific tests
-on-run-start:
-  - "{{ print('Excluding test_claim_amount_consistency') }}"
-config:
-  tests:
-    +exclude:
-      - test_claim_amount_consistency
+
