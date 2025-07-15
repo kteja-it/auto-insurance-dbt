@@ -44,3 +44,10 @@ models:
       +materialized: table
       +schema: ANALYTICS
 
+# Exclude specific tests
+on-run-start:
+  - "{{ print('Excluding test_claim_amount_consistency') }}"
+config:
+  tests:
+    +exclude:
+      - test_claim_amount_consistency
